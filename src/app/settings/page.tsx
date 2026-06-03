@@ -20,8 +20,8 @@ export default function SettingsPage() {
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        setUserEmail(user.email);
-        setUserName(user.user_metadata?.full_name || user.email?.split('@')[0] || 'User');
+        setUserEmail(user.email ?? null);
+        setUserName((user.user_metadata?.full_name as string) || user.email?.split('@')[0] || 'User');
       }
     };
     getUser();
