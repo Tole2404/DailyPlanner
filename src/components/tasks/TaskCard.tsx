@@ -53,7 +53,7 @@ export function TaskCard({ task, onToggleComplete, onEdit, onDelete }: TaskCardP
           <span
             className="w-2 h-2 rounded-full"
             style={{ backgroundColor: priorityColor }}
-            title={`Prioritas ${STATUS_LABELS[task.priority]}`}
+            title={`Prioritas ${PRIORITY_LABELS[task.priority]}`}
           />
           {task.status === 'overdue' && (
             <span className="text-[10px] font-medium text-priority-high">Overdue</span>
