@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { Task } from '@/lib/types';
+import { Task, TaskInsert } from '@/lib/types';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { TaskCard, TaskForm } from '@/components/tasks';
@@ -67,16 +67,29 @@ export default function CalendarPage() {
   const goToPrevMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
   const goToNextMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
 
-  const handleAddTask = async (data: any) => {
+  const handleAddTask = async (data: Omit<TaskInsert, 'user_id'>) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    await supabase.from('tasks').insert({ ...data, user_id: user.id });
+    const taskData = {
+      title: data.title,
+      description: data.description ?? null,
+      date: data.date,
+      time_start: data.time_start ?? null,
+      time_end: data.time_end ?? null,
+      category: data.category,
+      priority: data.priority,
+      status: data.status,
+      reminder: data.reminder ?? null,
+      user_id: user.id,
+    };
+
+    await supabase.from('tasks').insert(taskData);
     setShowForm(false);
     fetchTasks();
   };
 
-  const handleUpdateTask = async (data: any) => {
+  const handleUpdateTask = async (data: Omit<TaskInsert, 'user_id'>) => {
     if (!editingTask) return;
     await supabase.from('tasks').update(data).eq('id', editingTask.id);
     setEditingTask(null);
