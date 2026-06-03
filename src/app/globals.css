@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&family=Inter:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Main palette — "Soft Productive" */
+  --color-bg: #F9F7F7;
+  --color-surface: #DBE2EF;
+  --color-primary: #3F72AF;
+  --color-dark: #112D4E;
+
+  /* Category colors */
+  --cat-kerja: #3F72AF;
+  --cat-pribadi: #A78BFA;
+  --cat-kesehatan: #6EE7B7;
+  --cat-belajar: #FCD34D;
+  --cat-lain: #94A3B8;
+
+  /* Priority colors */
+  --priority-high: #F87171;
+  --priority-medium: #FB923C;
+  --priority-low: #4ADE80;
+}
+
+[data-theme="dark"] {
+  --color-bg: #0F172A;
+  --color-surface: #1E293B;
+  --color-primary: #60A5FA;
+  --color-dark: #F1F5F9;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-dark);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Focus styles */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 3px;
+}
+
+/* Card animations */
+.task-card {
+  transition: all 0.2s ease;
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(63, 114, 175, 0.12);
+}
+
+/* Task completed state */
+.task-completed {
+  opacity: 0.6;
+  text-decoration: line-through;
+}
+
+/* Modal animation */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-animate {
+  animation: slideUp 0.25s ease;
+}
+
+/* Checkbox animation */
+@keyframes checkBounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.check-animate {
+  animation: checkBounce 0.3s ease;
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline — DayFlow</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #F9F7F7;
+      color: #112D4E;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .dark body { background: #0F172A; color: #F1F5F9; }
+    .container { text-align: center; max-width: 400px; }
+    h1 { font-size: 24px; margin-bottom: 12px; font-weight: 600; }
+    p { color: #112D4E99; font-size: 14px; line-height: 1.6; }
+    .dark p { color: #F1F5F999; }
+    button {
+      margin-top: 20px;
+      padding: 12px 24px;
+      background: #3F72AF;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    button:hover { background: #2d5a8a; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#3F72AF" stroke-width="1.5" style="margin-bottom: 16px;">
+      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+    </svg>
+    <h1>Oops! Kamu Offline</h1>
+    <p>Sepertinya koneksi internet bermasalah. Task kamu tetap tersimpan dan akan sync otomatis saat kembali online.</p>
+    <button onclick="window.location.reload()">Coba Lagi</button>
+  </div>
+  <script>
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+</body>
+</html>
