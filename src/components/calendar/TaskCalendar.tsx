@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths } from 'date-fns';
-import id from 'date-fns/locale/id';
+import { id } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import clsx from 'clsx';
 

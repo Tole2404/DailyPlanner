@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Task, TaskInsert } from '@/lib/types';
 import { format } from 'date-fns';
-import id from 'date-fns/locale/id';
+import { id } from 'date-fns/locale';
 import { TaskCard, TaskForm } from '@/components/tasks';
 import { TaskCalendar } from '@/components/calendar';
 import { StatsCards } from '@/components/stats';

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Task } from '@/lib/types';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns';
-import id from 'date-fns/locale/id';
+import { id } from 'date-fns/locale';
 import { TaskCard, TaskForm } from '@/components/tasks';
 import { Sidebar, Header, BottomNav } from '@/components/layout';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
