@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Check, Trash2, Edit2, Clock } from 'lucide-react';
-import { Task, CATEGORY_LABELS, CATEGORY_COLORS, PRIORITY_COLORS, STATUS_LABELS } from '@/lib/types';
+import { Task, CATEGORY_LABELS, CATEGORY_COLORS, PRIORITY_COLORS, PRIORITY_LABELS, STATUS_LABELS } from '@/lib/types';
 import clsx from 'clsx';
 
 interface TaskCardProps {
