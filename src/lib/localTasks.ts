@@ -6,6 +6,14 @@ function canUseStorage() {
   return typeof window !== 'undefined' && Boolean(window.localStorage);
 }
 
+function createLocalId() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+
+  return `local-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
 export function getLocalTasks(): Task[] {
   if (!canUseStorage()) return [];
 
@@ -24,7 +32,7 @@ export function saveLocalTasks(tasks: Task[]) {
 export function addLocalTask(data: Omit<TaskInsert, 'user_id'>): Task {
   const now = new Date().toISOString();
   const task: Task = {
-    id: crypto.randomUUID(),
+    id: createLocalId(),
     user_id: 'local-user',
     title: data.title,
     description: data.description ?? null,

@@ -18,7 +18,7 @@ export function Header() {
   const title = pageTitles[pathname] || 'DayFlow';
 
   return (
-    <header className="sticky top-0 z-40 bg-bg border-b border-surface">
+    <header className="sticky top-0 z-40 border-b border-white/20 bg-bg/85 backdrop-blur-xl dark:bg-slate-950/65 dark:border-white/10">
       <div className="flex items-center justify-between h-16 px-4 md:px-6">
         {/* Page Title */}
         <div>
@@ -40,9 +40,8 @@ export function Header() {
           <button
             onClick={() => setTheme(resolvedTheme === 'light' ? 'dark' : 'light')}
             className={clsx(
-              'p-2 rounded-button transition-colors',
-              'text-dark/60 hover:text-dark hover:bg-surface',
-              'md:hidden'
+              'flex items-center gap-2 px-3 py-2 rounded-full shadow-sm transition-all',
+              'bg-primary text-white hover:scale-105 hover:bg-primary/90'
             )}
             aria-label="Toggle theme"
           >
@@ -51,6 +50,9 @@ export function Header() {
             ) : (
               <Sun className="w-5 h-5" />
             )}
+            <span className="hidden sm:inline text-xs font-semibold">
+              {resolvedTheme === 'light' ? 'Gelap' : 'Terang'}
+            </span>
           </button>
 
           <button

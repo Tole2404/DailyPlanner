@@ -32,6 +32,23 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function () {
+                try {
+                  var theme = localStorage.getItem('dayflow-theme') || 'system';
+                  var isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                  document.documentElement.classList.toggle('dark', isDark);
+                  if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
+                  else document.documentElement.removeAttribute('data-theme');
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body>
         <ThemeProvider>
           <ClientLayout>{children}</ClientLayout>

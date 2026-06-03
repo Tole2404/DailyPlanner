@@ -17,7 +17,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
 
   useEffect(() => {
-    // Load theme from localStorage
     const stored = localStorage.getItem('dayflow-theme') as Theme | null;
     if (stored) {
       setTheme(stored);
@@ -31,9 +30,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const applyTheme = (isDark: boolean) => {
       if (isDark) {
         root.setAttribute('data-theme', 'dark');
+        root.classList.add('dark');
         setResolvedTheme('dark');
       } else {
         root.removeAttribute('data-theme');
+        root.classList.remove('dark');
         setResolvedTheme('light');
       }
     };
