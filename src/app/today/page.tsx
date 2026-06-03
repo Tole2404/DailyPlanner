@@ -60,7 +60,7 @@ export default function TodayPage() {
   };
 
   // Task handlers
-  const handleAddTask = async (data: TaskInsert) => {
+  const handleAddTask = async (data: Omit<TaskInsert, 'user_id'>) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
@@ -75,13 +75,9 @@ export default function TodayPage() {
     }
   };
 
-  const handleUpdateTask = async (data: TaskInsert) => {
+const handleUpdateTask = async (data: Omit<TaskInsert, 'user_id'>) => {
     if (!editingTask) return;
-
-    const { error } = await supabase
-      .from('tasks')
-      .update(data)
-      .eq('id', editingTask.id);
+    const { error } = await supabase.from('tasks').update(data).eq('id', editingTask.id);
 
     if (!error) {
       setEditingTask(null);

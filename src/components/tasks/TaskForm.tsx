@@ -9,7 +9,7 @@ import clsx from 'clsx';
 interface TaskFormProps {
   task?: Task;
   defaultDate?: Date;
-  onSubmit: (data: TaskInsert) => void;
+  onSubmit: (data: Omit<TaskInsert, 'user_id'>) => void;
   onClose: () => void;
 }
 
