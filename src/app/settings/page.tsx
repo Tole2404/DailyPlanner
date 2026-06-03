@@ -1,36 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
 import { useTheme } from '@/components/providers/ThemeProvider';
 import { Sidebar, Header, BottomNav } from '@/components/layout';
-import { Moon, Sun, Monitor, LogOut, User } from 'lucide-react';
+import { Moon, Sun, Monitor, User } from 'lucide-react';
 import clsx from 'clsx';
 
 export default function SettingsPage() {
-  const router = useRouter();
   const { theme, setTheme } = useTheme();
-  const supabase = createClient();
-
-  const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [userName, setUserName] = useState<string>('');
-
-  useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        setUserEmail(user.email ?? null);
-        setUserName((user.user_metadata?.full_name as string) || user.email?.split('@')[0] || 'User');
-      }
-    };
-    getUser();
-  }, [supabase]);
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push('/login');
-  };
 
   const themeOptions = [
     { value: 'light', label: 'Terang', icon: Sun },
@@ -55,8 +31,8 @@ export default function SettingsPage() {
                   <User className="w-8 h-8 text-primary" />
                 </div>
                 <div>
-                  <p className="font-medium text-dark">{userName}</p>
-                  <p className="text-sm text-dark/60">{userEmail}</p>
+                  <p className="font-medium text-dark">Pengguna Lokal</p>
+                  <p className="text-sm text-dark/60">Data tersimpan di perangkat ini</p>
                 </div>
               </div>
             </div>
@@ -94,15 +70,6 @@ export default function SettingsPage() {
                 </p>
               </div>
             </div>
-
-            {/* Logout */}
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-3 w-full px-4 py-3 rounded-card text-priority-high hover:bg-surface transition-colors"
-            >
-              <LogOut className="w-5 h-5" />
-              <span className="font-medium">Keluar</span>
-            </button>
           </div>
         </main>
       </div>

@@ -1,17 +1,13 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
 import { Task, CATEGORY_LABELS, CATEGORY_COLORS } from '@/lib/types';
+import { getLocalTasks } from '@/lib/localTasks';
 import { startOfMonth, endOfMonth, format } from 'date-fns';
 import { Sidebar, Header, BottomNav } from '@/components/layout';
 import { StatsCards } from '@/components/stats';
 
 export default function DashboardPage() {
-  const router = useRouter();
-  const supabase = createClient();
-
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [monthlyData, setMonthlyData] = useState<{
@@ -32,21 +28,11 @@ export default function DashboardPage() {
     const monthStart = startOfMonth(now);
     const monthEnd = endOfMonth(now);
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      router.push('/login');
-      return;
-    }
+    const data = getLocalTasks()
+      .filter((task) => task.date >= format(monthStart, 'yyyy-MM-dd') && task.date <= format(monthEnd, 'yyyy-MM-dd'))
+      .sort((a, b) => a.date.localeCompare(b.date));
 
-    const { data, error } = await supabase
-      .from('tasks')
-      .select('*')
-      .gte('date', format(monthStart, 'yyyy-MM-dd'))
-      .lte('date', format(monthEnd, 'yyyy-MM-dd'))
-      .order('date', { ascending: true });
-
-    if (!error && data) {
-      setTasks(data as Task[]);
+    setTasks(data);
 
       // Calculate stats
       const total = data.length;
@@ -60,9 +46,8 @@ export default function DashboardPage() {
       });
 
       setMonthlyData({ total, completed, byCategory, byPriority });
-    }
     setIsLoading(false);
-  }, [supabase, router]);
+  }, []);
 
   useEffect(() => {
     fetchTasks();

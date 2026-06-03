@@ -1,9 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
 import { Task, TaskInsert } from '@/lib/types';
+import { addLocalTask, deleteLocalTask, getLocalTasks, updateLocalTask } from '@/lib/localTasks';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { TaskCard, TaskForm } from '@/components/tasks';
@@ -11,9 +10,6 @@ import { Sidebar, Header, BottomNav } from '@/components/layout';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function CalendarPage() {
-  const router = useRouter();
-  const supabase = createClient();
-
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [tasks, setTasks] = useState<Task[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -30,25 +26,13 @@ export default function CalendarPage() {
     const startDate = format(monthStart, 'yyyy-MM-dd');
     const endDate = format(monthEnd, 'yyyy-MM-dd');
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      router.push('/login');
-      return;
-    }
+    const data = getLocalTasks()
+      .filter((task) => task.date >= startDate && task.date <= endDate)
+      .sort((a, b) => a.date.localeCompare(b.date) || (a.time_start || '').localeCompare(b.time_start || ''));
 
-    const { data, error } = await supabase
-      .from('tasks')
-      .select('*')
-      .gte('date', startDate)
-      .lte('date', endDate)
-      .order('date', { ascending: true })
-      .order('time_start', { ascending: true });
-
-    if (!error && data) {
-      setTasks(data as Task[]);
-    }
+    setTasks(data);
     setIsLoading(false);
-  }, [monthStart, monthEnd, supabase, router]);
+  }, [monthStart, monthEnd]);
 
   useEffect(() => {
     fetchTasks();
@@ -68,42 +52,26 @@ export default function CalendarPage() {
   const goToNextMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
 
   const handleAddTask = async (data: Omit<TaskInsert, 'user_id'>) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const taskData = {
-      title: data.title,
-      description: data.description ?? null,
-      date: data.date,
-      time_start: data.time_start ?? null,
-      time_end: data.time_end ?? null,
-      category: data.category,
-      priority: data.priority,
-      status: data.status,
-      reminder: data.reminder ?? null,
-      user_id: user.id,
-    };
-
-    await supabase.from('tasks').insert(taskData);
+    addLocalTask(data);
     setShowForm(false);
     fetchTasks();
   };
 
   const handleUpdateTask = async (data: Omit<TaskInsert, 'user_id'>) => {
     if (!editingTask) return;
-    await supabase.from('tasks').update(data).eq('id', editingTask.id);
+    updateLocalTask(editingTask.id, data);
     setEditingTask(null);
     fetchTasks();
   };
 
   const handleDeleteTask = async (id: string) => {
     if (!confirm('Apus task ini?')) return;
-    await supabase.from('tasks').delete().eq('id', id);
+    deleteLocalTask(id);
     fetchTasks();
   };
 
   const handleToggleComplete = async (id: string, completed: boolean) => {
-    await supabase.from('tasks').update({ status: completed ? 'completed' : 'pending' }).eq('id', id);
+    updateLocalTask(id, { status: completed ? 'completed' : 'pending' });
     fetchTasks();
   };
 

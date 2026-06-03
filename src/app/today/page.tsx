@@ -1,9 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
 import { Task, TaskInsert } from '@/lib/types';
+import { addLocalTask, deleteLocalTask, getLocalTasks, updateLocalTask } from '@/lib/localTasks';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { TaskCard, TaskForm } from '@/components/tasks';
@@ -13,40 +12,24 @@ import { Sidebar, Header, BottomNav } from '@/components/layout';
 import { Plus, Inbox } from 'lucide-react';
 
 export default function TodayPage() {
-  const router = useRouter();
-  const supabase = createClient();
-
   const [tasks, setTasks] = useState<Task[]>([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const [userEmail, setUserEmail] = useState<string | null>(null);
+
 
   // Fetch tasks
   const fetchTasks = useCallback(async () => {
     setIsLoading(true);
     const dateStr = format(selectedDate, 'yyyy-MM-dd');
+    const data = getLocalTasks()
+      .filter((task) => task.date === dateStr)
+      .sort((a, b) => (a.time_start || '').localeCompare(b.time_start || ''));
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      router.push('/login');
-      return;
-    }
-
-    setUserEmail(user.email ?? null);
-
-    const { data, error } = await supabase
-      .from('tasks')
-      .select('*')
-      .eq('date', dateStr)
-      .order('time_start', { ascending: true });
-
-    if (!error && data) {
-      setTasks(data as Task[]);
-    }
+    setTasks(data);
     setIsLoading(false);
-  }, [selectedDate, supabase, router]);
+  }, [selectedDate]);
 
   useEffect(() => {
     fetchTasks();
@@ -61,51 +44,28 @@ export default function TodayPage() {
 
   // Task handlers
   const handleAddTask = async (data: Omit<TaskInsert, 'user_id'>) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { error } = await supabase.from('tasks').insert({
-      ...data,
-      user_id: user.id,
-    });
-
-    if (!error) {
-      setShowForm(false);
-      fetchTasks();
-    }
+    addLocalTask(data);
+    setShowForm(false);
+    fetchTasks();
   };
 
-const handleUpdateTask = async (data: Omit<TaskInsert, 'user_id'>) => {
+  const handleUpdateTask = async (data: Omit<TaskInsert, 'user_id'>) => {
     if (!editingTask) return;
-    const { error } = await supabase.from('tasks').update(data).eq('id', editingTask.id);
-
-    if (!error) {
-      setEditingTask(null);
-      fetchTasks();
-    }
+    updateLocalTask(editingTask.id, data);
+    setEditingTask(null);
+    fetchTasks();
   };
 
   const handleDeleteTask = async (id: string) => {
     if (!confirm('Yakin hapus task ini?')) return;
 
-    const { error } = await supabase.from('tasks').delete().eq('id', id);
-    if (!error) {
-      fetchTasks();
-    }
-  };
-
-  const handleToggleComplete = async (id: string, completed: boolean) => {
-    await supabase
-      .from('tasks')
-      .update({ status: completed ? 'completed' : 'pending' })
-      .eq('id', id);
-
+    deleteLocalTask(id);
     fetchTasks();
   };
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push('/login');
+  const handleToggleComplete = async (id: string, completed: boolean) => {
+    updateLocalTask(id, { status: completed ? 'completed' : 'pending' });
+    fetchTasks();
   };
 
   return (
