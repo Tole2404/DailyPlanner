@@ -34,7 +34,7 @@ export default function TodayPage() {
       return;
     }
 
-    setUserEmail(user.email);
+    setUserEmail(user.email ?? null);
 
     const { data, error } = await supabase
       .from('tasks')
