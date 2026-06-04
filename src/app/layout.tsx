@@ -13,8 +13,11 @@ export const metadata: Metadata = {
     title: 'DayFlow',
   },
   icons: {
-    icon: '/icons/icon-192.png',
-    apple: '/icons/apple-touch-icon.png',
+    icon: '/icon.svg',
+    apple: '/icon.svg',
+  },
+  other: {
+    'apple-touch-icon': '/icon.svg',
   },
 };
 
