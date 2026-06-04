@@ -1,8 +1,11 @@
 'use client';
 
+import { useState } from 'react';
 import { Bell, Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/components/providers/ThemeProvider';
 import { usePathname } from 'next/navigation';
+import { NotificationPanel } from '@/components/notifications/NotificationPanel';
+import { getLocalTasks } from '@/lib/localTasks';
 import clsx from 'clsx';
 
 const pageTitles: Record<string, string> = {
@@ -15,7 +18,10 @@ const pageTitles: Record<string, string> = {
 export function Header() {
   const pathname = usePathname();
   const { resolvedTheme, setTheme } = useTheme();
+  const [showNotifications, setShowNotifications] = useState(false);
   const title = pageTitles[pathname] || 'DayFlow';
+
+  const tasks = getLocalTasks();
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/20 bg-bg/85 backdrop-blur-xl dark:bg-slate-950/65 dark:border-white/10">
@@ -36,7 +42,49 @@ export function Header() {
         </div>
 
         {/* Right side actions */}
-        <div className="flex items-center gap-2">
+        <div className="relative flex items-center gap-2">
+          {/* Bell / Notifications */}
+          <div className="relative">
+            <button
+              onClick={() => setShowNotifications(!showNotifications)}
+              className={clsx(
+                'p-2 rounded-button transition-colors relative',
+                showNotifications
+                  ? 'text-primary bg-primary/10'
+                  : 'text-dark/60 hover:text-dark hover:bg-surface'
+              )}
+              aria-label="Notifikasi"
+            >
+              <Bell className="w-5 h-5" />
+              {/* Dot indicator if upcoming tasks */}
+              {tasks.some(
+                (t) =>
+                  t.date === new Date().toISOString().split('T')[0] &&
+                  t.status !== 'completed' &&
+                  t.time_start
+              ) && (
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-priority-high" />
+              )}
+            </button>
+
+            {/* Notification Panel */}
+            {showNotifications && (
+              <>
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setShowNotifications(false)}
+                />
+                <div className="relative z-50">
+                  <NotificationPanel
+                    tasks={tasks}
+                    onClose={() => setShowNotifications(false)}
+                  />
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Theme Toggle */}
           <button
             onClick={() => setTheme(resolvedTheme === 'light' ? 'dark' : 'light')}
             className={clsx(
@@ -53,16 +101,6 @@ export function Header() {
             <span className="hidden sm:inline text-xs font-semibold">
               {resolvedTheme === 'light' ? 'Gelap' : 'Terang'}
             </span>
-          </button>
-
-          <button
-            className={clsx(
-              'p-2 rounded-button transition-colors',
-              'text-dark/60 hover:text-dark hover:bg-surface'
-            )}
-            aria-label="Notifications"
-          >
-            <Bell className="w-5 h-5" />
           </button>
 
           <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center md:hidden">
