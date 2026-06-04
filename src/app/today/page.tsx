@@ -9,7 +9,9 @@ import { TaskCard, TaskForm } from '@/components/tasks';
 import { TaskCalendar } from '@/components/calendar';
 import { StatsCards } from '@/components/stats';
 import { Sidebar, Header, BottomNav } from '@/components/layout';
-import { Plus, Inbox } from 'lucide-react';
+import { TemplatesPicker } from '@/components/templates/TemplatesPicker';
+import { PomodoroTimer } from '@/components/pomodoro/PomodoroTimer';
+import { Plus, Inbox, Sparkles, Timer } from 'lucide-react';
 
 export default function TodayPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -17,6 +19,9 @@ export default function TodayPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [showPomodoro, setShowPomodoro] = useState(false);
+  const [activePomodoroTask, setActivePomodoroTask] = useState<Task | null>(null);
 
 
   // Fetch tasks
@@ -68,6 +73,18 @@ export default function TodayPage() {
     fetchTasks();
   };
 
+  const handleApplyTemplate = (tasks: Omit<TaskInsert, 'user_id'>[]) => {
+    tasks.forEach((task) => {
+      addLocalTask(task);
+    });
+    fetchTasks();
+  };
+
+  const handleStartPomodoro = (task: Task) => {
+    setActivePomodoroTask(task);
+    setShowPomodoro(true);
+  };
+
   return (
     <div className="min-h-screen bg-bg">
       <Sidebar />
@@ -92,13 +109,23 @@ export default function TodayPage() {
                   <h2 className="font-heading font-semibold text-lg">
                     Task {format(selectedDate, 'EEEE, d MMMM', { locale: id })}
                   </h2>
-                  <button
-                    onClick={() => setShowForm(true)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-button bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors"
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span className="hidden md:inline">Tambah Task</span>
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setShowTemplates(true)}
+                      className="flex items-center gap-2 px-3 py-2 rounded-button bg-surface text-dark text-sm font-medium hover:bg-surface/70 transition-colors"
+                      title="Gunakan Template"
+                    >
+                      <Sparkles className="w-4 h-4" />
+                      <span className="hidden md:inline">Template</span>
+                    </button>
+                    <button
+                      onClick={() => setShowForm(true)}
+                      className="flex items-center gap-2 px-4 py-2 rounded-button bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span className="hidden md:inline">Tambah Task</span>
+                    </button>
+                  </div>
                 </div>
 
                 {isLoading ? (
@@ -134,7 +161,29 @@ export default function TodayPage() {
             </div>
 
             {/* Calendar sidebar */}
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 space-y-4">
+              {/* Pomodoro Timer */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-heading font-semibold text-sm text-dark">
+                    Pomodoro Timer
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => setShowPomodoro(!showPomodoro)}
+                    className="text-xs text-primary hover:text-primary/80"
+                  >
+                    {showPomodoro ? 'Sembunyikan' : 'Tampilkan'}
+                  </button>
+                </div>
+                {showPomodoro && (
+                  <PomodoroTimer
+                    taskId={activePomodoroTask?.id}
+                    taskTitle={activePomodoroTask?.title}
+                  />
+                )}
+              </div>
+
               <TaskCalendar
                 tasks={tasks.map(t => ({ id: t.id, date: t.date, category: t.category }))}
                 selectedDate={selectedDate}
@@ -162,6 +211,15 @@ export default function TodayPage() {
           task={editingTask}
           onSubmit={handleUpdateTask}
           onClose={() => setEditingTask(null)}
+        />
+      )}
+
+      {/* Templates Picker Modal */}
+      {showTemplates && (
+        <TemplatesPicker
+          selectedDate={selectedDate}
+          onApply={handleApplyTemplate}
+          onClose={() => setShowTemplates(false)}
         />
       )}
     </div>

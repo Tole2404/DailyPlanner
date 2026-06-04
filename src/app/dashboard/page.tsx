@@ -6,6 +6,7 @@ import { getLocalTasks } from '@/lib/localTasks';
 import { startOfMonth, endOfMonth, format } from 'date-fns';
 import { Sidebar, Header, BottomNav } from '@/components/layout';
 import { StatsCards } from '@/components/stats';
+import { WeeklyView } from '@/components/weekly';
 
 export default function DashboardPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -80,6 +81,20 @@ export default function DashboardPage() {
             completedTasks={monthlyData.completed}
             streakDays={streakDays}
           />
+
+          {/* Weekly View */}
+          <div className="mt-6">
+            <WeeklyView
+              tasks={getLocalTasks()}
+              onTaskClick={(task) => {
+                // Navigate to today page with selected task
+                window.location.href = `/today?date=${task.date}`;
+              }}
+              onDateClick={(date) => {
+                window.location.href = `/today?date=${format(date, 'yyyy-MM-dd')}`;
+              }}
+            />
+          </div>
 
           {/* Category Distribution */}
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -1,12 +1,23 @@
 'use client';
 
+import { useState } from 'react';
 import { useTheme } from '@/components/providers/ThemeProvider';
 import { Sidebar, Header, BottomNav } from '@/components/layout';
-import { Moon, Sun, Monitor, User } from 'lucide-react';
+import { ExportImportModal } from '@/components/export';
+import { getLocalTasks, saveLocalTasks } from '@/lib/localTasks';
+import { Task } from '@/lib/types';
+import { Moon, Sun, Monitor, User, Download } from 'lucide-react';
 import clsx from 'clsx';
 
 export default function SettingsPage() {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
+  const [showExportImport, setShowExportImport] = useState(false);
+
+  const handleImport = (importedTasks: Task[]) => {
+    const existingTasks = getLocalTasks();
+    const mergedTasks = [...existingTasks, ...importedTasks];
+    saveLocalTasks(mergedTasks);
+  };
 
   const themeOptions = [
     { value: 'light', label: 'Terang', icon: Sun },
@@ -59,6 +70,24 @@ export default function SettingsPage() {
               </div>
             </div>
 
+            {/* Export & Import */}
+            <div className="bg-white dark:bg-surface rounded-card p-5 mb-6">
+              <h3 className="font-heading font-semibold mb-4">Backup & Restore</h3>
+              <button
+                type="button"
+                onClick={() => setShowExportImport(true)}
+                className="w-full flex items-center justify-between p-4 rounded-card border-2 border-surface hover:border-primary/30 hover:bg-primary/5 transition-all"
+              >
+                <div className="flex items-center gap-3">
+                  <Download className="w-5 h-5 text-primary" />
+                  <div className="text-left">
+                    <div className="font-medium text-dark">Export & Import Data</div>
+                    <div className="text-sm text-dark/60">Backup atau restore task kamu</div>
+                  </div>
+                </div>
+              </button>
+            </div>
+
             {/* About */}
             <div className="bg-white dark:bg-surface rounded-card p-5 mb-6">
               <h3 className="font-heading font-semibold mb-4">Tentang</h3>
@@ -75,6 +104,14 @@ export default function SettingsPage() {
       </div>
 
       <BottomNav />
+
+      {showExportImport && (
+        <ExportImportModal
+          tasks={getLocalTasks()}
+          onImport={handleImport}
+          onClose={() => setShowExportImport(false)}
+        />
+      )}
     </div>
   );
 }
