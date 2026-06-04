@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useTheme } from '@/components/providers/ThemeProvider';
 import { Sidebar, Header, BottomNav } from '@/components/layout';
-import { ExportImportModal } from '@/components/export';
+import { ExportImportModal } from '@/components/export/ExportImportModal';
 import { getLocalTasks, saveLocalTasks } from '@/lib/localTasks';
 import { Task } from '@/lib/types';
 import { Moon, Sun, Monitor, User, Download } from 'lucide-react';

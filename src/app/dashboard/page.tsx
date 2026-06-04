@@ -6,7 +6,7 @@ import { getLocalTasks } from '@/lib/localTasks';
 import { startOfMonth, endOfMonth, format } from 'date-fns';
 import { Sidebar, Header, BottomNav } from '@/components/layout';
 import { StatsCards } from '@/components/stats';
-import { WeeklyView } from '@/components/weekly';
+import { WeeklyView } from '@/components/weekly/WeeklyView';
 
 export default function DashboardPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
