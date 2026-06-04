@@ -92,10 +92,10 @@ export default function TodayPage() {
       <div className="md:ml-[260px] min-h-screen pb-20 md:pb-0">
         <Header />
 
-        <main className="p-4 md:p-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <main className="p-3 md:p-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 lg:gap-4">
             {/* Main content */}
-            <div className="lg:col-span-2 space-y-4">
+            <div className="lg:col-span-2 space-y-3">
               {/* Stats summary */}
               <StatsCards
                 totalTasks={stats.total}
@@ -129,12 +129,12 @@ export default function TodayPage() {
                 </div>
 
                 {isLoading ? (
-                  <div className="text-center py-12 text-dark/50">Memuat...</div>
+                  <div className="text-center py-6 text-dark/50 text-sm">Memuat...</div>
                 ) : tasks.length === 0 ? (
-                  <div className="text-center py-12">
-                    <Inbox className="w-12 h-12 mx-auto mb-4 text-dark/20" />
-                    <h3 className="font-medium text-dark mb-1">Belum ada task hari ini</h3>
-                    <p className="text-sm text-dark/50 mb-4">
+                  <div className="text-center py-6">
+                    <Inbox className="w-8 h-8 mx-auto mb-2 text-dark/20" />
+                    <h3 className="font-medium text-dark text-sm mb-1">Belum ada task hari ini</h3>
+                    <p className="text-xs text-dark/50 mb-3">
                       Mulai rencanakan harimu! 🌤️
                     </p>
                     <button
@@ -161,26 +161,29 @@ export default function TodayPage() {
             </div>
 
             {/* Calendar sidebar */}
-            <div className="lg:col-span-1 space-y-4">
+            <div className="lg:col-span-1 space-y-2">
               {/* Pomodoro Timer */}
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-heading font-semibold text-sm text-dark">
-                    Pomodoro Timer
+              <div className="bg-white dark:bg-surface rounded-card p-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-heading font-semibold text-xs text-dark flex items-center gap-1.5">
+                    <Timer className="w-3.5 h-3.5 text-primary" />
+                    Pomodoro
                   </h3>
                   <button
                     type="button"
                     onClick={() => setShowPomodoro(!showPomodoro)}
-                    className="text-xs text-primary hover:text-primary/80"
+                    className="text-[10px] font-medium text-primary hover:text-primary/80"
                   >
                     {showPomodoro ? 'Sembunyikan' : 'Tampilkan'}
                   </button>
                 </div>
                 {showPomodoro && (
-                  <PomodoroTimer
-                    taskId={activePomodoroTask?.id}
-                    taskTitle={activePomodoroTask?.title}
-                  />
+                  <div className="mt-2">
+                    <PomodoroTimer
+                      taskId={activePomodoroTask?.id}
+                      taskTitle={activePomodoroTask?.title}
+                    />
+                  </div>
                 )}
               </div>
 

@@ -36,41 +36,41 @@ export function TaskCalendar({ tasks, selectedDate, onSelectDate }: TaskCalendar
   const goToNextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
 
   return (
-    <div className="bg-white dark:bg-surface rounded-card p-4">
+    <div className="bg-white dark:bg-surface rounded-card p-3">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-2">
         <button
           onClick={goToPrevMonth}
-          className="p-1.5 rounded-button text-dark/60 hover:text-dark hover:bg-surface transition-colors"
+          className="p-1 rounded-button text-dark/60 hover:text-dark hover:bg-surface transition-colors"
           aria-label="Previous month"
         >
-          <ChevronLeft className="w-5 h-5" />
+          <ChevronLeft className="w-4 h-4" />
         </button>
-        <h3 className="font-heading font-semibold text-dark">
+        <h3 className="font-heading font-semibold text-sm text-dark">
           {format(currentMonth, 'MMMM yyyy', { locale: id })}
         </h3>
         <button
           onClick={goToNextMonth}
-          className="p-1.5 rounded-button text-dark/60 hover:text-dark hover:bg-surface transition-colors"
+          className="p-1 rounded-button text-dark/60 hover:text-dark hover:bg-surface transition-colors"
           aria-label="Next month"
         >
-          <ChevronRight className="w-5 h-5" />
+          <ChevronRight className="w-4 h-4" />
         </button>
       </div>
 
       {/* Weekday headers */}
-      <div className="grid grid-cols-7 mb-2">
+      <div className="grid grid-cols-7 mb-1">
         {['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'].map((day) => (
-          <div key={day} className="text-center text-xs font-medium text-dark/50 py-2">
+          <div key={day} className="text-center text-[10px] font-medium text-dark/50 py-1">
             {day}
           </div>
         ))}
       </div>
 
       {/* Calendar grid */}
-      <div className="grid grid-cols-7 gap-1">
+      <div className="grid grid-cols-7 gap-0.5">
         {emptyDays.map((_, i) => (
-          <div key={`empty-${i}`} className="aspect-square" />
+          <div key={`empty-${i}`} className="h-7" />
         ))}
         {days.map((day) => {
           const dateStr = format(day, 'yyyy-MM-dd');
@@ -83,7 +83,7 @@ export function TaskCalendar({ tasks, selectedDate, onSelectDate }: TaskCalendar
               key={dateStr}
               onClick={() => onSelectDate(day)}
               className={clsx(
-                'aspect-square rounded-button flex flex-col items-center justify-center gap-0.5 transition-colors relative',
+                'h-7 w-full rounded-button flex flex-col items-center justify-center transition-colors relative',
                 isSelected
                   ? 'bg-primary text-white'
                   : isToday
@@ -91,11 +91,11 @@ export function TaskCalendar({ tasks, selectedDate, onSelectDate }: TaskCalendar
                   : 'text-dark hover:bg-surface/50'
               )}
             >
-              <span className="text-sm">{format(day, 'd')}</span>
+              <span className="text-xs">{format(day, 'd')}</span>
               {hasTask && (
                 <span
                   className={clsx(
-                    'w-1.5 h-1.5 rounded-full',
+                    'w-1 h-1 rounded-full absolute -bottom-0.5',
                     isSelected ? 'bg-white' : 'bg-primary'
                   )}
                 />

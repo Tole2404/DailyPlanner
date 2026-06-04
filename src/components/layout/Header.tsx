@@ -25,10 +25,10 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/20 bg-bg/85 backdrop-blur-xl dark:bg-slate-950/65 dark:border-white/10">
-      <div className="flex items-center justify-between h-16 px-4 md:px-6">
+      <div className="flex items-center justify-between h-12 px-3 md:px-4">
         {/* Page Title */}
         <div>
-          <h2 className="font-heading font-semibold text-lg md:text-xl text-dark">
+          <h2 className="font-heading font-semibold text-base md:text-lg text-dark">
             {title}
           </h2>
           <p className="text-xs text-dark/50 hidden md:block">
@@ -48,14 +48,14 @@ export function Header() {
             <button
               onClick={() => setShowNotifications(!showNotifications)}
               className={clsx(
-                'p-2 rounded-button transition-colors relative',
+                'p-1.5 rounded-button transition-colors relative',
                 showNotifications
                   ? 'text-primary bg-primary/10'
                   : 'text-dark/60 hover:text-dark hover:bg-surface'
               )}
               aria-label="Notifikasi"
             >
-              <Bell className="w-5 h-5" />
+              <Bell className="w-4 h-4" />
               {/* Dot indicator if upcoming tasks */}
               {tasks.some(
                 (t) =>
@@ -88,17 +88,17 @@ export function Header() {
           <button
             onClick={() => setTheme(resolvedTheme === 'light' ? 'dark' : 'light')}
             className={clsx(
-              'flex items-center gap-2 px-3 py-2 rounded-full shadow-sm transition-all',
+              'flex items-center gap-1.5 px-2.5 py-1.5 rounded-full shadow-sm transition-all',
               'bg-primary text-white hover:scale-105 hover:bg-primary/90'
             )}
             aria-label="Toggle theme"
           >
             {resolvedTheme === 'light' ? (
-              <Moon className="w-5 h-5" />
+              <Moon className="w-3.5 h-3.5" />
             ) : (
-              <Sun className="w-5 h-5" />
+              <Sun className="w-3.5 h-3.5" />
             )}
-            <span className="hidden sm:inline text-xs font-semibold">
+            <span className="hidden sm:inline text-[10px] font-semibold">
               {resolvedTheme === 'light' ? 'Gelap' : 'Terang'}
             </span>
           </button>
